@@ -20,7 +20,7 @@ class FeedViewModel(private val repository: PicsRepository) : ViewModel() {
                 _feedState.value = when(result) {
                     is Request.Success -> {
                         val stateList = mutableListOf<FeedItemState>().apply {
-                            result.data.forEach {
+                            result.data.images.forEach {
                                 add(it.toFeedItemState())
                             }
                         }

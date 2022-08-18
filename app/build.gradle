@@ -80,6 +80,9 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:0.23.0" // Pager
     implementation "com.google.accompanist:accompanist-pager-indicators:0.23.0" // Pager
 
-
-
+    // Koin
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 }

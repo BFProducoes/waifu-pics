@@ -25,10 +25,11 @@ import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.lowersoft.waifupics.domain.model.FeedItemState
 import com.lowersoft.waifupics.domain.model.FeedScreenState
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun FeedScreen(model: FeedViewModel) {
+fun FeedScreen(model: FeedViewModel = getViewModel()) {
 
 
     val state = model.feedState.collectAsState()

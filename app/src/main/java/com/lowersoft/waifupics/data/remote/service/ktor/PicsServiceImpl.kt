@@ -2,7 +2,7 @@ package com.lowersoft.waifupics.data.remote.service.ktor
 
 import android.util.Log
 import com.lowersoft.waifupics.common.Constants
-import com.lowersoft.waifupics.data.remote.dto.Picture
+import com.lowersoft.waifupics.data.remote.dto.Pictures
 import com.lowersoft.waifupics.data.remote.service.retrofit.Request
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -13,7 +13,7 @@ class PicsServiceImpl(private val client: HttpClient) : PicsService {
 
     private val tag = "PicsWebService"
 
-    override suspend fun getRandomPic(): Flow<Request<List<Picture>>> {
+    override suspend fun getRandomPic(): Flow<Request<Pictures>> {
         return flow {
             emit(Request.Loading)
             try {
