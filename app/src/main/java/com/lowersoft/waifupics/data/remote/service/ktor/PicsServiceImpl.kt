@@ -19,7 +19,8 @@ class PicsServiceImpl(private val client: HttpClient) : PicsService {
             try {
                 emit(Request.Success(client.get { url(Constants.URLs.RANDOM) }))
             } catch (e: Exception) {
-                Log.e(tag,
+                Log.e(
+                    tag,
                     e.message
                         ?: "An error occurred while trying to make the random pictures request. See logging for more info. "
                 )

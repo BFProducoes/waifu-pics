@@ -13,12 +13,12 @@ data class Picture(
     val image_id: Int,
     val is_nsfw: Boolean,
     val preview_url: String,
-    val source: String,
+    val source: String?,
     val tags: List<Tag>,
     val uploaded_at: String,
     val url: String,
     val width: Int
 ) {
     fun toFeedItemState() =
-        FeedItemState(image_id, url, preview_url, favourites, is_nsfw)
+        FeedItemState(image_id, url, preview_url, favourites, is_nsfw, dominant_color)
 }

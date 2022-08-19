@@ -5,5 +5,6 @@ data class FeedItemState(
     val imageUrl: String,
     val imagePreviewUrl: String,
     val favoritesCount: Int,
-    val isNotSafeForWork: Boolean
+    val isNotSafeForWork: Boolean,
+    val imageDominantColorHex: String
 )
