@@ -1,36 +1,35 @@
 package com.lowersoft.waifupics.presentation.ui.feed
 
-import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.VerticalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.lowersoft.waifupics.domain.model.FeedItemState
 import com.lowersoft.waifupics.domain.model.FeedScreenState
 import org.koin.androidx.compose.getViewModel
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FeedScreen(model: FeedViewModel = getViewModel()) {
 
@@ -41,91 +40,93 @@ fun FeedScreen(model: FeedViewModel = getViewModel()) {
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize(),
-        floatingActionButton = { LikeButton() }
+        topBar = {
+            TopAppBar(
+                backgroundColor = MaterialTheme.colorScheme.background,
+                elevation = 0.dp
+            ) {
+                Text(
+                    text = "Explore",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 26.sp,
+                    modifier = Modifier
+                        .padding(start = 20.dp)
+                )
+            }
+        }
     ) {
         when (state.value) {
-            is FeedScreenState.Data -> FeedPager(items = (state.value as FeedScreenState.Data).items) {}
+            is FeedScreenState.Data -> FeedPager(items = (state.value as FeedScreenState.Data).items)
             FeedScreenState.Empty -> EmptyPager()
             FeedScreenState.Loading -> Loading()
         }
     }
 }
 
-@Composable
-private fun LikeButton() {
-    val context = LocalContext.current
-    Button(onClick = {
-        Toast.makeText(
-            context,
-            "The image was sent to your gallery",
-            Toast.LENGTH_SHORT
-        ).show()
-    }, shape = CircleShape) {
-        Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorite button")
-    }
-}
-
 @ExperimentalPagerApi
 @Composable
 private fun FeedPager(
-    items: List<FeedItemState>,
-    onLikeClick: (String) -> Unit
+    items: List<FeedItemState>
 ) {
-    val pagerState = rememberPagerState()
-
-    VerticalPager(
-        count = items.size,
-        state = pagerState
-    ) { page ->
-        PagerItem(
-            itemState = items[page],
-            isSelected = page == pagerState.currentPage,
-            onLikeClick = onLikeClick
-        )
+    LazyColumn {
+        items(items) {
+            PagerItem(itemState = it)
+        }
     }
 }
 
 @Composable
 private fun PagerItem(
-    itemState: FeedItemState,
-    isSelected: Boolean,
-    onLikeClick: (String) -> Unit
+    itemState: FeedItemState
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        PictureListItem(
-            imageUrl = itemState.imageUrl,
-            imageDescription = "waifupic",
-            backgroundColor = Color(itemState.imageDominantColorHex.toColorInt())
-        )
-    }
-}
 
-@Composable
-fun PictureListItem(imageUrl: String, imageDescription: String, backgroundColor: Color) {
-    Column(
+    val isFocused = remember {
+        mutableStateOf(false)
+    }
+
+    Card(
         modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor),
-        verticalArrangement = Arrangement.Center
+            .fillMaxWidth()
+            .padding(20.dp)
+            .size(160.dp)
+            .onFocusEvent { isFocused.value = !isFocused.value },
+        elevation = 8.dp,
+        shape = RoundedCornerShape(12.dp),
+        backgroundColor = Color.White
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(25.dp),
-            shape = RoundedCornerShape(10.dp),
-            elevation = 10.dp
-        ) {
+        Box {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl)
+                    .data(itemState.imageUrl)
                     .crossfade(true)
                     .build(),
-                contentDescription = imageDescription,
-                contentScale = ContentScale.Inside,
+                contentDescription = "",
+                contentScale = ContentScale.Crop
             )
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                contentAlignment = Alignment.BottomStart
+            ) {
+                AnimatedVisibility(visible = isFocused.value) {
+                    Column {
+                        Text(
+                            text = itemState.tags.first().name,
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = itemState.tags.first().description,
+                            fontSize = 15.sp,
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -149,7 +150,8 @@ private fun Loading() {
             modifier = Modifier
                 .size(64.dp)
                 .align(Alignment.Center),
-            color = MaterialTheme.colorScheme.onBackground
+            color = Color.Cyan,
+            strokeWidth = 8.dp
         )
     }
 }

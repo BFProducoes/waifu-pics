@@ -20,5 +20,5 @@ data class Picture(
     val width: Int
 ) {
     fun toFeedItemState() =
-        FeedItemState(image_id, url, preview_url, favourites, is_nsfw, dominant_color)
+        FeedItemState(image_id, url, preview_url, favourites, is_nsfw, dominant_color, tags)
 }
