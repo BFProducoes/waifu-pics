@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface PicsRepository {
 
-    suspend fun getRandomPicture(): Flow<Request<Pictures>>
+    suspend fun getWaifuPicList(): Flow<Request<Pictures>>
+
+    suspend fun getNsfwPicList(): Flow<Request<Pictures>>
+
+    suspend fun getOppaiPicList(): Flow<Request<Pictures>>
 
 }

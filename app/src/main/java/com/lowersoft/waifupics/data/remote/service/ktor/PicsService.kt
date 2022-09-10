@@ -5,5 +5,5 @@ import com.lowersoft.waifupics.data.remote.service.retrofit.Request
 import kotlinx.coroutines.flow.Flow
 
 interface PicsService {
-    suspend fun getRandomPic(): Flow<Request<Pictures>>
+    suspend fun getRequest(url: String): Flow<Request<Pictures>>
 }

@@ -1,6 +1,6 @@
 package com.lowersoft.waifupics.data.remote.dto
 
-import com.lowersoft.waifupics.domain.model.FeedItemState
+import com.lowersoft.waifupics.domain.model.FeedItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,5 +20,5 @@ data class Picture(
     val width: Int
 ) {
     fun toFeedItemState() =
-        FeedItemState(image_id, url, preview_url, favourites, is_nsfw, dominant_color, tags)
+        FeedItem(image_id, url, preview_url, favourites, is_nsfw, dominant_color, tags)
 }
