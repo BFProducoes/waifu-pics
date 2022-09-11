@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import com.lowersoft.waifupics.common.TopBar
 import com.lowersoft.waifupics.domain.model.FeedScreenState
 import com.lowersoft.waifupics.presentation.ui.feed.components.FeedContent
 
@@ -24,7 +25,7 @@ fun FeedScreen(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize(),
-        topBar = {}
+        topBar = { TopBar(text = "Explore") }
     ) {
         FeedContent(
             model = model,

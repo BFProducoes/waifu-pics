@@ -66,4 +66,8 @@ class FeedViewModel(private val repository: PicsRepository) : ViewModel() {
     fun onFeedItemSelected(item: FeedItem) {
         _selectedItemState.value = PictureState.Loaded(item)
     }
+
+    fun saveImageOnGallery() {
+
+    }
 }
