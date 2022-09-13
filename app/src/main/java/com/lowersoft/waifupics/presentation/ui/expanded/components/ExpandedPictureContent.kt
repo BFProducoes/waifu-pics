@@ -1,5 +1,6 @@
 package com.lowersoft.waifupics.presentation.ui.expanded.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,15 +15,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import coil.compose.SubcomposeAsyncImage
+import com.lowersoft.waifupics.common.CaptureBitmap
 import com.lowersoft.waifupics.domain.model.FeedItem
 
 @Composable
 fun ExpandedPictureContent(
     item: FeedItem,
     isClicked: State<Boolean>,
-    onImageClick: () -> Unit
+    onImageClick: () -> Unit,
+    onLikeClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onDownloadClick: (saveBitmapCallback: () -> Bitmap) -> Unit,
 ) {
-
     val dominantColor = Color(item.imageDominantColorHex.toColorInt())
 
     Card(
@@ -34,16 +38,25 @@ fun ExpandedPictureContent(
         shape = RoundedCornerShape(12.dp),
         backgroundColor = dominantColor
     ) {
-        SubcomposeAsyncImage(
-            model = item.imageUrl,
-            loading = {
-                CircularProgressIndicator()
-            },
-            contentDescription = "A sexy anime/manga girl.",
-            contentScale = ContentScale.Crop
-        )
+        val bitmapImage = CaptureBitmap {
+            SubcomposeAsyncImage(
+                model = item.imageUrl,
+                loading = {
+                    CircularProgressIndicator()
+                },
+                contentDescription = "A sexy anime/manga girl.",
+                contentScale = ContentScale.Crop
+            )
+        }
         if (isClicked.value) {
-            ImageOptionsScreen(item = item, dominantColor)
+            ImageOptionsScreen(
+                item = item,
+                dominantColor,
+                onLikeClick,
+                onShareClick,
+                onDownloadClick = { onDownloadClick(bitmapImage) },
+                bitmapImage
+            )
         }
     }
 }

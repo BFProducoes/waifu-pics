@@ -1,5 +1,6 @@
 package com.lowersoft.waifupics.presentation.ui.expanded.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +19,14 @@ import androidx.compose.ui.unit.dp
 import com.lowersoft.waifupics.domain.model.FeedItem
 
 @Composable
-fun ImageOptionsScreen(item: FeedItem, dominantColor: Color) {
+fun ImageOptionsScreen(
+    item: FeedItem,
+    dominantColor: Color,
+    onLikeClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    saveBitmapCallback: () -> Bitmap
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,17 +45,17 @@ fun ImageOptionsScreen(item: FeedItem, dominantColor: Color) {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             RoundedButton(
-                onClick = {},
+                onClick = onLikeClick,
                 icon = Icons.Filled.Favorite,
                 iconColor = dominantColor
             )
             RoundedButton(
-                onClick = {},
+                onClick = onDownloadClick,
                 icon = Icons.Filled.KeyboardArrowDown,
                 iconColor = dominantColor
             )
             RoundedButton(
-                onClick = {},
+                onClick = onShareClick,
                 icon = Icons.Filled.Share,
                 iconColor = dominantColor
             )

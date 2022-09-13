@@ -1,5 +1,12 @@
 package com.lowersoft.waifupics.presentation.ui.feed
 
+import android.content.ContentValues
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lowersoft.waifupics.data.remote.dto.Pictures
@@ -8,9 +15,11 @@ import com.lowersoft.waifupics.domain.model.FeedItem
 import com.lowersoft.waifupics.domain.model.FeedScreenState
 import com.lowersoft.waifupics.domain.model.PictureState
 import com.lowersoft.waifupics.domain.repository.PicsRepository
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.OutputStream
 
 class FeedViewModel(private val repository: PicsRepository) : ViewModel() {
 
@@ -67,7 +76,40 @@ class FeedViewModel(private val repository: PicsRepository) : ViewModel() {
         _selectedItemState.value = PictureState.Loaded(item)
     }
 
-    fun saveImageOnGallery() {
+    private fun saveImageOnGallery(context: Context, bitmap: Bitmap) {
+        val filename = "${System.currentTimeMillis()}.jpg"
+        var fos: OutputStream? = null
+
+        context.contentResolver?.also { resolver ->
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            }
+
+            val imageUri: Uri? =
+                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            fos = imageUri?.let { resolver.openOutputStream(it) }
+        }
+
+        fos?.use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun onLikeClick() {
+
+    }
+
+    fun onDownloadClick(context: Context, saveBitmapCallback: () -> Bitmap) {
+        MainScope().launch {
+            saveImageOnGallery(context, saveBitmapCallback.invoke())
+        }
+    }
+
+    fun onShareClick() {
 
     }
 }
